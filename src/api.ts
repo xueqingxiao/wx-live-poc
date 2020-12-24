@@ -32,17 +32,17 @@ export interface Session {
 }
 
 export const creatSession = (username: string) =>
-  axios.post<CreateSession>("http://10.103.1.188:3030/api/session", {
+  axios.post<CreateSession>("https://wx-metis-service.herokuapp.com/api/session", {
     username,
   });
 
 export const joinSession = (sessionId: string, username: string) =>
-  axios.put<JoinSession>(`http://10.103.1.188:3030/api/session/${sessionId}`, {
+  axios.put<JoinSession>(`https://wx-metis-service.herokuapp.com/api/session/${sessionId}`, {
     username,
   });
 
 export const fetchSession = (uid: string) =>
-  axios.get<Session>(`http://10.103.1.188:3030/api/session/${uid}`);
+  axios.get<Session>(`https://wx-metis-service.herokuapp.com/api/session/${uid}`);
 
 export const fetchWxSign = () =>
   axios.get<{
@@ -50,7 +50,7 @@ export const fetchWxSign = () =>
     timestamp: string;
     nonceStr: string;
     signature: string;
-  }>(`http://10.103.1.188:3030/api/session/wx-sign`, {
+  }>(`https://wx-metis-service.herokuapp.com/api/session/wx-sign`, {
     params: {
       url: document.URL
     }
