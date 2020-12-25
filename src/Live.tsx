@@ -25,7 +25,7 @@ const Live = () => {
     if (!wxSign.value) {
       return;
     }
-    window.wx.config({ ...wxSign.value.data, debug: false, jsApiList: [] });
+    window.wx.config({ ...wxSign.value.data, debug: false, jsApiList: ['startRecord','stopRecord'] });
   }, [wxSign]);
   const handlePause = () => {
     console.log(stream);
