@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAsync } from "react-use";
 import { useJoin, useLive, useSubscribe } from "./agora-rtc-sdk";
@@ -10,6 +10,7 @@ const Live = () => {
   const wxSign = useAsync(() => fetchWxSign());
   const [liveClient] = useLive(session.value?.data.agora.appId);
   const [stream] = useSubscribe(liveClient);
+  const [localId, setLocalId] = useState<string>();
   useJoin(liveClient, {
     token: session.value?.data.agora.token,
     channel: session.value?.data.agora.channel,
@@ -25,7 +26,11 @@ const Live = () => {
     if (!wxSign.value) {
       return;
     }
-    window.wx.config({ ...wxSign.value.data, debug: false, jsApiList: ['startRecord','stopRecord'] });
+    window.wx.config({
+      ...wxSign.value.data,
+      debug: false,
+      jsApiList: ["startRecord", "stopRecord"],
+    });
   }, [wxSign]);
   const handlePause = () => {
     console.log(stream);
@@ -46,13 +51,24 @@ const Live = () => {
   };
   const handleStartRecord = () => {
     window.wx.startRecord();
+    window.wx.onVoiceRecordEnd({
+      complete: (resp: any) => {
+        setLocalId(resp.localId);
+      },
+    });
   };
 
   const handleStopRecord = () => {
     window.wx.stopRecord({
-      success: console.log,
+      success: (resp: any) => {
+        setLocalId(resp.localId);
+      },
       error: console.log,
     });
+  };
+
+  const handlePlayRecord = () => {
+    window.wx.playVoice({ localId });
   };
   return (
     <>
@@ -66,6 +82,7 @@ const Live = () => {
       <div>
         <button onClick={handleStartRecord}>录音</button>
         <button onClick={handleStopRecord}>停止录音</button>
+        <button onClick={handlePlayRecord}>播放录音</button>
       </div>
     </>
   );
