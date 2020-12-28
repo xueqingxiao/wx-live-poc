@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAsync } from "react-use";
-import { useJoin, useLive, useSubscribe } from "./agora-rtc-sdk";
+// import { useJoin, useLive, useSubscribe } from "./agora-rtc-sdk";
 import { fetchSession, fetchWxSign } from "./api";
 
 const Live = () => {
   const { id } = useParams<{ id: string }>();
   const session = useAsync(() => fetchSession(id));
   const wxSign = useAsync(() => fetchWxSign());
-  const [liveClient] = useLive(session.value?.data.agora.appId);
-  const [stream] = useSubscribe(liveClient);
+  // const [liveClient] = useLive(session.value?.data.agora.appId);
+  // const [stream] = useSubscribe(liveClient);
   const [localId, setLocalId] = useState<string>();
-  useJoin(liveClient, {
-    token: session.value?.data.agora.token,
-    channel: session.value?.data.agora.channel,
-    uid: session.value?.data.agora.uid,
-  });
-  useEffect(() => {
-    if (!stream || stream.isPlaying()) {
-      return;
-    }
-    stream.play("test");
-  }, [stream]);
+  // useJoin(liveClient, {
+  //   token: session.value?.data.agora.token,
+  //   channel: session.value?.data.agora.channel,
+  //   uid: session.value?.data.agora.uid,
+  // });
+  // useEffect(() => {
+  //   if (!stream || stream.isPlaying()) {
+  //     return;
+  //   }
+  //   stream.play("test");
+  // }, [stream]);
   useEffect(() => {
     if (!wxSign.value) {
       return;
@@ -33,21 +33,21 @@ const Live = () => {
     });
   }, [wxSign]);
   const handlePause = () => {
-    console.log(stream);
-    stream.stop();
+    // console.log(stream);
+    // stream.stop();
   };
 
   const handleResume = () => {
-    console.log(stream);
-    stream.play("test");
+    // console.log(stream);
+    // stream.play("test");
   };
 
   const handleMute = () => {
-    console.log(stream);
-    stream.muteAudio();
+    // console.log(stream);
+    // stream.muteAudio();
   };
   const handleUnMute = () => {
-    stream.unmuteAudio();
+    // stream.unmuteAudio();
   };
   const handleStartRecord = () => {
     window.wx.startRecord();
