@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { useAsync } from "react-use";
 // import { useJoin, useLive, useSubscribe } from "./agora-rtc-sdk";
-import { fetchSession, fetchWxSign } from "./api";
+import { /* fetchSession, */ fetchWxSign } from "./api";
 
 const Live = () => {
-  const { id } = useParams<{ id: string }>();
-  const session = useAsync(() => fetchSession(id));
+  // const { id } = useParams<{ id: string }>();
+  // const session = useAsync(() => fetchSession(id));
   const wxSign = useAsync(() => fetchWxSign());
   // const [liveClient] = useLive(session.value?.data.agora.appId);
   // const [stream] = useSubscribe(liveClient);
