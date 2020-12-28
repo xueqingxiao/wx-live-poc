@@ -29,7 +29,7 @@ const Live = () => {
     window.wx.config({
       ...wxSign.value.data,
       debug: false,
-      jsApiList: ["startRecord", "stopRecord"],
+      jsApiList: ["startRecord", "stopRecord", 'onVoiceRecordEnd', 'playVoice'],
     });
   }, [wxSign]);
   const handlePause = () => {
