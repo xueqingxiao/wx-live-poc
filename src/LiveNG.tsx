@@ -10,7 +10,7 @@ const LiveNG = () => {
   const wxSign = useAsync(() => fetchWxSign());
   const ref = useRef<HTMLDivElement>(null);
   const [rtcClient] = useAgoraRTC();
-  const [stream] = useSubscribe(rtcClient, ref);
+  const [remoteTracks] = useSubscribe(rtcClient);
   const [localId, setLocalId] = useState<string>();
   useJoin(rtcClient, {
     appId: session.value?.data.agora.appId,
@@ -18,6 +18,13 @@ const LiveNG = () => {
     channel: session.value?.data.agora.channel,
     uid: session.value?.data.agora.uid,
   });
+  useEffect(() => {
+    remoteTracks.forEach((track) => {
+      if (ref.current) {
+        track.play(ref.current);
+      }
+    });
+  }, [remoteTracks, ref]);
   useEffect(() => {
     if (!wxSign.value) {
       return;
@@ -29,21 +36,34 @@ const LiveNG = () => {
     });
   }, [wxSign]);
   const handlePause = () => {
-    console.log(stream);
-    stream.stop();
+    console.log(remoteTracks);
+    remoteTracks.forEach((track) => {
+      track.stop();
+    });
   };
 
   const handleResume = () => {
-    console.log(stream);
-    stream.play("test");
+    remoteTracks.forEach((track) => {
+      if (ref.current) {
+        track.play(ref.current);
+      }
+    });
   };
 
   const handleMute = () => {
-    console.log(stream);
-    stream.muteAudio();
+    remoteTracks.forEach((track) => {
+      if (track.trackMediaType === "audio") {
+        track.stop();
+      }
+    });
   };
+
   const handleUnMute = () => {
-    stream.unmuteAudio();
+    remoteTracks.forEach((track) => {
+      if (track.trackMediaType === "audio") {
+        track.play();
+      }
+    });
   };
   const handleStartRecord = () => {
     window.wx.startRecord();
@@ -70,8 +90,8 @@ const LiveNG = () => {
     <>
       <div id="test" style={{ height: 200 }} ref={ref}></div>
       <div>
-        <button onClick={handlePause}>暂停</button>
         <button onClick={handleResume}>播放</button>
+        <button onClick={handlePause}>暂停</button>
         <button onClick={handleMute}>静音</button>
         <button onClick={handleUnMute}>取消静音</button>
       </div>
