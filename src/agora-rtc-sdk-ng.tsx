@@ -3,7 +3,7 @@ import AgoraRTC, {
   IAgoraRTCRemoteUser,
   IRemoteTrack,
 } from "agora-rtc-sdk-ng";
-import { useCallback, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useState } from "react";
 
 export interface LiveConfig {
   appId: string;
@@ -48,24 +48,20 @@ export const useJoin = (
   return [joined];
 };
 
-export const useSubscribe = (client?: IAgoraRTCClient): [IRemoteTrack[]] => {
-  const [tracks, setTracks] = useState<IRemoteTrack[]>([]);
-  const handleSubscribed = useCallback(
-    (track: IRemoteTrack) => {
-      setTracks([...tracks, track]);
-    },
-    [tracks, setTracks]
-  );
-  const handleUserPublished = useCallback(
-    (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
-      client
-        ?.subscribe(user, mediaType)
-        .then((track) => handleSubscribed(track));
-    },
-    [client, handleSubscribed]
-  );
+export const useSubscribe = (
+  client?: IAgoraRTCClient,
+  ref?: RefObject<HTMLDivElement>
+) => {
   useEffect(() => {
-    client?.on("user-published", handleUserPublished);
-  }, [client, handleUserPublished]);
-  return [tracks];
+    client?.on(
+      "user-published",
+      (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
+        client?.subscribe(user, mediaType).then((track: IRemoteTrack) => {
+          if (ref && ref.current) {
+            track.play(ref.current);
+          }
+        });
+      }
+    );
+  }, [client, ref]);
 };

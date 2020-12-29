@@ -10,7 +10,7 @@ const LiveNG = () => {
   const wxSign = useAsync(() => fetchWxSign());
   const ref = useRef<HTMLDivElement>(null);
   const [rtcClient] = useAgoraRTC();
-  const [remoteTracks] = useSubscribe(rtcClient);
+  useSubscribe(rtcClient, ref);
   const [localId, setLocalId] = useState<string>();
   useJoin(rtcClient, {
     appId: session.value?.data.agora.appId,
@@ -18,13 +18,6 @@ const LiveNG = () => {
     channel: session.value?.data.agora.channel,
     uid: session.value?.data.agora.uid,
   });
-  useEffect(() => {
-    remoteTracks.forEach((track) => {
-      if (ref.current) {
-        track.play(ref.current);
-      }
-    });
-  }, [remoteTracks, ref]);
   useEffect(() => {
     if (!wxSign.value) {
       return;
@@ -35,36 +28,36 @@ const LiveNG = () => {
       jsApiList: ["startRecord", "stopRecord", "onVoiceRecordEnd", "playVoice"],
     });
   }, [wxSign]);
-  const handlePause = () => {
-    console.log(remoteTracks);
-    remoteTracks.forEach((track) => {
-      track.stop();
-    });
-  };
+  // const handlePause = () => {
+  //   console.log(remoteTracks);
+  //   remoteTracks.forEach((track) => {
+  //     track.stop();
+  //   });
+  // };
 
-  const handleResume = () => {
-    remoteTracks.forEach((track) => {
-      if (ref.current) {
-        track.play(ref.current);
-      }
-    });
-  };
+  // const handleResume = () => {
+  //   remoteTracks.forEach((track) => {
+  //     if (ref.current) {
+  //       track.play(ref.current);
+  //     }
+  //   });
+  // };
 
-  const handleMute = () => {
-    remoteTracks.forEach((track) => {
-      if (track.trackMediaType === "audio") {
-        track.stop();
-      }
-    });
-  };
+  // const handleMute = () => {
+  //   remoteTracks.forEach((track) => {
+  //     if (track.trackMediaType === "audio") {
+  //       track.stop();
+  //     }
+  //   });
+  // };
 
-  const handleUnMute = () => {
-    remoteTracks.forEach((track) => {
-      if (track.trackMediaType === "audio") {
-        track.play();
-      }
-    });
-  };
+  // const handleUnMute = () => {
+  //   remoteTracks.forEach((track) => {
+  //     if (track.trackMediaType === "audio") {
+  //       track.play();
+  //     }
+  //   });
+  // };
   const handleStartRecord = () => {
     window.wx.startRecord();
     window.wx.onVoiceRecordEnd({
@@ -89,12 +82,12 @@ const LiveNG = () => {
   return (
     <>
       <div id="test" style={{ height: 200 }} ref={ref}></div>
-      <div>
+      {/* <div>
         <button onClick={handleResume}>播放</button>
         <button onClick={handlePause}>暂停</button>
         <button onClick={handleMute}>静音</button>
         <button onClick={handleUnMute}>取消静音</button>
-      </div>
+      </div> */}
       <div>
         <button onClick={handleStartRecord}>录音</button>
         <button onClick={handleStopRecord}>停止录音</button>
