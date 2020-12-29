@@ -3,7 +3,7 @@ import AgoraRTC, {
   IAgoraRTCRemoteUser,
   IRemoteTrack,
 } from "agora-rtc-sdk-ng";
-import { RefObject, useCallback, useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 
 export interface LiveConfig {
   appId: string;
